@@ -77,8 +77,8 @@ model.add(Dense(vocabSize, activation="softmax"))
 
 model.compile(loss="categorical_crossentropy", optimizer ="rmsprop", metrics = ["accuracy"])
 
-model.fit(xdata,ydata, epochs = 400, batch_size=800)
+model.fit(xdata,ydata, epochs = 300, batch_size=800)
 
-model.save("inYeBon_epochs400.hdf5") # 모델 저장 
+model.save("inYeBon_epochs300.hdf5") # 모델 저장 
 
 # --------------------------------------------------------------------------------------------------
