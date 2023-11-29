@@ -26,11 +26,7 @@ vocabSize = len(tokenizer.word_index)+1 #1164 + 1
 print(vocabSize)
 model=load_model("inYeBon_epochs400.hdf5") # 모델 불러오기 
 
-<<<<<<< HEAD
 wordList="강의 를".split()
-=======
-wordList="강의".split()
->>>>>>> 6b80aaeb24ac192301bae5892c9d986a6730d5e2
 reverseWordMap = dict(map(reversed,tokenizer.word_index.items()))
 
 x = pad_sequences( [[tokenizer.word_index[w] for w in wordList[:2] ]] , maxlen=maxLen)
