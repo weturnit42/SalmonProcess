@@ -26,7 +26,7 @@ vocabSize = len(tokenizer.word_index)+1 #1164 + 1
 print(vocabSize)
 model=load_model("OOP.hdf5") # 모델 불러오기 
 
-wordList="앙".split()
+wordList="강의".split()
 reverseWordMap = dict(map(reversed,tokenizer.word_index.items()))
 
 x = pad_sequences( [[tokenizer.word_index[w] for w in wordList[:2] ]] , maxlen=maxLen)

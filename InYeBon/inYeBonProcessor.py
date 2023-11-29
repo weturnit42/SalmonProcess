@@ -24,7 +24,7 @@ maxLen = max([len(x)-1 for x in doc] ) # 0번부터 시작하게 하려고
 print(maxLen)
 vocabSize = len(tokenizer.word_index)+1 #1164 + 1 
 print(vocabSize)
-model=load_model("inYeBon_epochs400.hdf5") # 모델 불러오기 
+model=load_model("inYeBon_epochs300.hdf5") # 모델 불러오기 
 
 wordList="강의 를".split()
 reverseWordMap = dict(map(reversed,tokenizer.word_index.items()))
