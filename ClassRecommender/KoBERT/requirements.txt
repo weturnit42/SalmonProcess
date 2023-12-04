@@ -1,0 +1,7 @@
+mxnet
+gluonnlp 
+pandas 
+tqdm
+sentencepiece==0.1.91
+transformers==4.8.2
+torch
