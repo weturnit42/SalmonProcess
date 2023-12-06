@@ -44,7 +44,7 @@ while(k < test_count):
         test_examples.append(test_data[l])
         k = k+1
 
-f = open('train_data' + str(train_count+test_count) + '.csv','w', encoding='utf-8')
+f = open('train_data_' + str(train_count+test_count) + '.csv','w', encoding='utf-8')
 for train_example in train_examples:
     f.write(train_example[0].replace(',','') + ',' + train_example[1].replace(',','') + ',' + train_example[2].replace(',','') + '\n')
 f.close()
