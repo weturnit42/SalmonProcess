@@ -46,10 +46,10 @@ while(k < test_count):
 
 f = open('train_data.csv','w', encoding='utf-8')
 for train_example in train_examples:
-    f.write(train_example[0] + ',' + train_example[1] + ',' + train_example[2] + '\n')
+    f.write(train_example[0].replace(',','') + ',' + train_example[1].replace(',','') + ',' + train_example[2].replace(',','') + '\n')
 f.close()
 
 f = open('test_data.csv','w', encoding='utf-8')
 for test_example in test_examples:
-    f.write(test_example[0] + ',' + test_example[1] + '\n')
+    f.write(test_example[0].replace(',','') + ',' + test_example[1] + '\n')
 f.close()

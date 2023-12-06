@@ -21,7 +21,7 @@ train_examples = []
 f = open('train_data.csv','r', encoding='utf-8')
 rdr = csv.reader(f)
 for row in rdr:
-    train_examples.append(row)
+    train_examples.append(InputExample(texts=[row[0], row[1], row[2]]))
 f.close()
 
 test_examples = []
@@ -30,6 +30,10 @@ rdr = csv.reader(f)
 for row in rdr:
     test_examples.append(row)
 f.close()
+
+# print("test_examples[0]", test_examples[0])
+# print("test_examples[1]", test_examples[1])
+# print("test_examples[2]", test_examples[2])
 
 train_count = 800 # hyper_params.
 test_count = 200
@@ -47,7 +51,7 @@ train_loss = losses.TripletLoss(model=model) # loss 정의. TripletLoss로
 
 # torch.save(model.state_dict(), "SCI_epochs_" + str(epochs) + "_batchsize_" + str(batch_size) +  ".pt") # 모델 저장
 
-model_state_dict = torch.load("SCI_epochs_16.pt", map_location=torch.device('cpu'))
+model_state_dict = torch.load("SCI_epochs_" + str(epochs) + "_batchsize_" + str(batch_size) +  ".pt", map_location=torch.device('cuda:0'))
 model.load_state_dict(model_state_dict)
 
 f = open('SCI_data.tsv','r', encoding='utf-8') # *.data.tsv 파일은 강의평, 강의 인덱스 데이터 파일
@@ -67,27 +71,45 @@ for i in list(range(len(mapper))): # 각 강의평마다 주어진 강의평 벡
     print(i, "done")
 
 acc = 0
+hitsAt5 = 0
+hitsAt10 = 0
+rankingBasedMetric = 0
+
 for i in list(range(test_count)):
     text = test_examples[i][0] #상상 강의평
-    answer = test_examples[i][1] #상상 강의평
+    answer = int(test_examples[i][1]) # answer label
 
     targetVector = model.encode([text])
     results = []
-    for i in list(range(len(mapper))):
-        similarities = util.cos_sim(vectors[i], targetVector) # compute similarity between sentence vectors
-        results.append((i, mapper[i], float(similarities)))
-
+    answerList = []
+    for j in list(range(len(mapper))):
+        similarities = util.cos_sim(vectors[j], targetVector) # compute similarity between sentence vectors
+        results.append((j, mapper[j], float(similarities)))
     results.sort(key = lambda x : -x[2])
+
+    for _ in results:
+        answerList.append(_[0])
     # print(text, "에 적합한 강의는")
     # for result in results[:10]:
     #     print(result)
     # print("입니다.")
     # print("=========================================")
-
-    if(results[0][0] == answer):
+    
+    # print(answer, answerList[:20])
+    if(answerList[0] == answer):
         acc = acc+1
-    else:
-        continue
-acc = acc / test_count
+    if(answer in answerList[:5]):
+        hitsAt5 = hitsAt5+1
+    if(answer in answerList[:10]):
+        hitsAt10 = hitsAt10+1
+    rankingBasedMetric = rankingBasedMetric + (1 - (answerList.index(answer)-1) / len(answerList))
 
-print(acc)
+acc = acc / test_count
+hitsAt5 = hitsAt5 / test_count
+hitsAt10 = hitsAt10 / test_count
+rankingBasedMetric = rankingBasedMetric / test_count
+
+print("acc", acc)
+print("hitsAt5", hitsAt5)
+print("hitsAt10", hitsAt10)
+print("rankingBasedMetric", rankingBasedMetric)
