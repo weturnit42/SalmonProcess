@@ -24,7 +24,7 @@ model = SentenceTransformer('snunlp/KR-SBERT-V40K-klueNLI-augSTS', device=device
 model.eval() # gpu 너무 많이 잡아 먹어서 달아놓은 코드
 
 train_examples = []
-f = open('train_data' + str(train_count+test_count) + '.csv','r', encoding='utf-8')
+f = open('train_data_' + str(train_count+test_count) + '.csv','r', encoding='utf-8')
 rdr = csv.reader(f)
 for row in rdr:
     train_examples.append(InputExample(texts=[row[0], row[1], row[2]]))
