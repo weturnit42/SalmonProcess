@@ -60,11 +60,11 @@ train_dataset = SentencesDataset(train_examples, model) # train_dataset 생성
 train_dataloader = DataLoader(train_dataset, shuffle=True, batch_size=batch_size) # DataLoader 초기화
 train_loss = losses.TripletLoss(model=model) # loss 정의. TripletLoss로
 
-model.fit(train_objectives=[(train_dataloader, train_loss)], epochs=epochs, warmup_steps=100) # fit
-torch.save(model.state_dict(), "fineTunedModel/" + tag + "/" + tag + "_epochs_" + str(epochs) + "_batchsize_" + str(batch_size) +  "_dataset_"  + str(train_count+test_count) +  ".pt") # 모델 저장
+# model.fit(train_objectives=[(train_dataloader, train_loss)], epochs=epochs, warmup_steps=100) # fit
+# torch.save(model.state_dict(), "fineTunedModel/" + tag + "/" + tag + "_epochs_" + str(epochs) + "_batchsize_" + str(batch_size) +  "_dataset_"  + str(train_count+test_count) +  ".pt") # 모델 저장
 
-# model_state_dict = torch.load("fineTunedModel/" + tag + "_epochs_" + str(epochs) + "_batchsize_" + str(batch_size) +  "_dataset_"  + str(train_count+test_count) +  ".pt", map_location=device)
-# model.load_state_dict(model_state_dict)
+model_state_dict = torch.load("fineTunedModel/" + tag + "_epochs_" + str(epochs) + "_batchsize_" + str(batch_size) +  "_dataset_"  + str(train_count+test_count) +  ".pt", map_location=device)
+model.load_state_dict(model_state_dict)
 
 f = open('data/' + tag + '_data.tsv','r', encoding='utf-8')  # *.data.tsv 파일은 강의평, 강의 인덱스 데이터 파일
 rdr = csv.reader(f, delimiter='\t')
