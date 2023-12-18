@@ -90,7 +90,7 @@ except FileNotFoundError:
             vector = model.encode(test_data[i][j])
             listedVector = vector.tolist()
             writer.writerow(listedVector)
-        print(i, "done")
+        print(i, "encoding done")
 
     f.close()
 
@@ -112,42 +112,71 @@ for i in list(range(len(vectors))):
         vectorData[i].append(vectors[i][j][0])
         dimList.append(np.array(vectors[i][j][0]).shape)
 
-text = "강의가 쉬우면서도 어렵습니다." #상상 강의평
-targetVector = model.encode([text]) # targetVector는 데스트 할 text string의 sentence vector
+targetText = "강의가 쉬우면서도 어렵습니다." #상상 강의평
+targetVector = model.encode([targetText]) # targetVector는 데스트 할 text string의 sentence vector
 
-results = []
-answerList = []
-simList = [[] for _ in list(range(len(vectorData)))]
+# results = []
+# answerList = []
+# simList = [[] for _ in list(range(len(vectorData)))]
 
-for i in list(range(len(vectorData))):
-    for j in list(range(len(vectorData[i]))):
-        tmp = vectorData[i][j].astype(np.float32)
+# for i in list(range(len(vectorData))):
+#     for j in list(range(len(vectorData[i]))):
+#         tmp = vectorData[i][j].astype(np.float32)
 
-        similarities = util.cos_sim(tmp, targetVector) # compute similarity between sentence vectors
-        simList[i].append(float(similarities))
+#         similarities = util.cos_sim(tmp, targetVector) # compute similarity between sentence vectors
+#         simList[i].append(float(similarities))
 
-    # print(len(vectorData[i]), len(simList[i]))
+# meanSim = []
+# stdSim = []
 
-meanSim = []
-stdSim = []
+# for sim in simList:
+#     meanSim.append(np.mean(np.array(sim)))
+#     stdSim.append(np.std(np.array(sim)))
 
-for sim in simList:
-    meanSim.append(np.mean(np.array(sim)))
-    stdSim.append(np.std(np.array(sim)))
+# for i in list(range(len(simList))):
+#     results.append((i, mapper[i], meanSim[i], stdSim[i]))
 
-for i in list(range(len(simList))):
-    results.append((i, mapper[i], meanSim[i], stdSim[i]))
+# results.sort(key = lambda x : -x[2])
 
-results.sort(key = lambda x : -x[2])
+# print(text, "에 적합한 강의는\n")
+# for result in results[:10]:
+#     # if(result[2] >= 0.5):
+#     #     print(result)
+#     print(result[0], result[1], round(result[2], 4), round(result[3], 4), len(simList[result[0]]))
+# print("\n입니다.")
+# print("=========================================")
 
-print(text, "에 적합한 강의는\n")
+vectors = [] 
+for i in list(range(len(mapper))): # 각 강의평마다 주어진 강의평 벡터의 평균을 각 강의와 매핑합니다.
+    vector = model.encode(test_data[i])
+    vector = np.mean(vector, axis=0)
+    vectors.append(vector)
+    print(i, "mean cal. done")
+
+acc = 0
+hitsAt3 = 0
+hitsAt5 = 0
+hitsAt10 = 0
+rankingBasedMetric = 0
+
+for i in list(range(test_count)):
+    text = test_examples[i][0] #상상 강의평
+    answer = int(test_examples[i][1]) # answer label
+
+    targetVector = model.encode([text]) # targetVector는 데스트 할 text string의 sentence vector
+    results = []
+    answerList = []
+    for j in list(range(len(mapper))):
+        similarities = util.cos_sim(vectors[j], targetVector) # compute similarity between sentence vectors
+        results.append((j, mapper[j], float(similarities)))
+    results.sort(key = lambda x : -x[2])
+
+print(targetText, "에 적합한 강의는")
 for result in results[:10]:
-    # if(result[2] >= 0.5):
-    #     print(result)
-    print(result[0], result[1], round(result[2], 4), round(result[3], 4), len(simList[result[0]]))
-print("\n입니다.")
+    print(result)
+print("입니다.")
 print("=========================================")
 
-import matplotlib.pyplot as plt
-plt.hist(simList[results[0][0]], bins=20)
-plt.show()
+# import matplotlib.pyplot as plt
+# plt.hist(simList[results[0][0]], bins=20)
+# plt.show()
