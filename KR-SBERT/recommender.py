@@ -151,7 +151,7 @@ for i in list(range(len(mapper))): # 각 강의평마다 주어진 강의평 벡
     vector = model.encode(test_data[i])
     vector = np.mean(vector, axis=0)
     vectors.append(vector)
-    print(i, "mean cal. done")
+    # print(i, "mean cal. done")
 
 acc = 0
 hitsAt3 = 0
@@ -168,11 +168,31 @@ for i in list(range(test_count)):
         results.append((j, mapper[j], float(similarities)))
     results.sort(key = lambda x : -x[2])
 
+# from datetime import datetime
+# now = datetime.now()
+
+# fileNameString = str(now.month) + str(now.day) + "_" + str(now.hour) + str(now.minute) + str(now.second) + "_result.txt"
+# fileName = open('results/' + fileNameString, 'w', encoding='utf-8')
+
+import unicodedata # 한글이 포함된 문자열에 간격 맞추기 솔루션을 제공하는 라이브러리
+def preFormat(string, width, align='<', fill=' '):
+    count = (width - sum(1 + (unicodedata.east_asian_width(c) in "WF") for c in string))
+    return {
+        '>': lambda s: fill * count + s, # lambda 매개변수 : 표현식
+        '<': lambda s: s + fill * count,
+        '^': lambda s: fill * (count / 2)
+                       + s
+                       + fill * (count / 2 + count % 2)
+    }[align](string)
+
 print(targetText, "에 적합한 강의는")
+print("번호" + " " + "강의명" + " " + "교수명" + " " + "score")
+print("="*45)
 for result in results[:10]:
-    print(result)
+    printedString = [str(result[0]), result[1].split('_')[0], result[1].split('_')[1], str(round(result[2], 3))]
+
+    print(printedString[0] + " " + printedString[1] + " " + printedString[2] + " " + printedString[3])
 print("입니다.")
-print("=========================================")
 
 # import matplotlib.pyplot as plt
 # plt.hist(simList[results[0][0]], bins=20)
