@@ -16,7 +16,7 @@ VIR 가상대학영역
 '''
 
 tags = ['CLA', 'ETC', 'FUT', 'GLO', 'LIT', 'SCI', 'SOC', 'SOF', 'VIR']
-tag = tags[3]
+tag = tags[0]
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 train_count = 8000 # hyper_params.
@@ -112,7 +112,7 @@ for i in list(range(len(vectors))):
         vectorData[i].append(vectors[i][j][0])
         dimList.append(np.array(vectors[i][j][0]).shape)
 
-targetText = "강의가 쉬우면서도 어렵습니다." #상상 강의평
+targetText = "논어를 잘 알려주셔서 좋습니다." #상상 강의평
 targetVector = model.encode([targetText]) # targetVector는 데스트 할 text string의 sentence vector
 
 # results = []
@@ -160,10 +160,7 @@ hitsAt10 = 0
 rankingBasedMetric = 0
 
 for i in list(range(test_count)):
-    text = test_examples[i][0] #상상 강의평
-    answer = int(test_examples[i][1]) # answer label
-
-    targetVector = model.encode([text]) # targetVector는 데스트 할 text string의 sentence vector
+    targetVector = model.encode([targetText]) # targetVector는 데스트 할 text string의 sentence vector
     results = []
     answerList = []
     for j in list(range(len(mapper))):
