@@ -60,8 +60,8 @@ train_dataset = SentencesDataset(train_examples, model) # train_dataset 생성
 train_dataloader = DataLoader(train_dataset, shuffle=True, batch_size=batch_size) # DataLoader 초기화
 train_loss = losses.TripletLoss(model=model) # loss 정의. TripletLoss로
 
-# model.fit(train_objectives=[(train_dataloader, train_loss)], epochs=epochs, warmup_steps=100) # fit
-# torch.save(model.state_dict(), "fineTunedModel/" + tag + "/" + tag + "_epochs_" + str(epochs) + "_batchsize_" + str(batch_size) +  "_dataset_"  + str(train_count+test_count) +  ".pt") # 모델 저장
+model.fit(train_objectives=[(train_dataloader, train_loss)], epochs=epochs, warmup_steps=100) # fit
+torch.save(model.state_dict(), "fineTunedModel/" + tag + "/" + tag + "_epochs_" + str(epochs) + "_batchsize_" + str(batch_size) +  "_dataset_"  + str(train_count+test_count) +  ".pt") # 모델 저장
 
 model_state_dict = torch.load("fineTunedModel/" + tag + "_epochs_" + str(epochs) + "_batchsize_" + str(batch_size) +  "_dataset_"  + str(train_count+test_count) +  ".pt", map_location=device)
 model.load_state_dict(model_state_dict)
